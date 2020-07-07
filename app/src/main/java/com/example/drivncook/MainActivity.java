@@ -54,22 +54,20 @@ public class MainActivity extends AppCompatActivity {
         final String email = this.email_login.getText().toString();
         final String password = this.password_login.getText().toString();
 
-        //Toast.makeText(MainActivity.this, email, Toast.LENGTH_SHORT).show();
-        //Toast.makeText(MainActivity.this, password, Toast.LENGTH_SHORT).show();
-
         RequestQueue MyRequestQueue = Volley.newRequestQueue(this);
 
-        String url = "https://drivncook.store/api/login.php?email=" + email + "&password=" + password;
+        String url = "https://drivncook.store/api/login?email=" + email + "&password=" + password;
+        Log.d("hello", url);
         StringRequest MyStringRequest = new StringRequest(Request.Method.POST, url, new Response.Listener<String>() {
             @Override
             public void onResponse(String response) {
                 response = response.trim();
-                Toast.makeText(MainActivity.this, response, Toast.LENGTH_SHORT).show();
-
-                if(response.equals("true")) {
-                    Toast.makeText(MainActivity.this, "OK", Toast.LENGTH_SHORT).show();
-                } else {
+                if(response.equals("false")) {
                     Toast.makeText(MainActivity.this, "Invalid credentials.", Toast.LENGTH_SHORT).show();
+                } else {
+                    Intent it = new Intent(MainActivity.this, UserActivity.class);
+                    it.putExtra("point", response + "");
+                    startActivity(it);
                 }
             }
         }, new Response.ErrorListener() { //Create an error listener to handle errors appropriately.
