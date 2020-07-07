@@ -4,10 +4,21 @@ import androidx.appcompat.app.AppCompatActivity;
 
 import android.content.Intent;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.Toast;
+
+import com.android.volley.Request;
+import com.android.volley.RequestQueue;
+import com.android.volley.Response;
+import com.android.volley.VolleyError;
+import com.android.volley.toolbox.StringRequest;
+import com.android.volley.toolbox.Volley;
+
+import java.util.HashMap;
+import java.util.Map;
 
 public class MainActivity extends AppCompatActivity {
 
@@ -27,23 +38,53 @@ public class MainActivity extends AppCompatActivity {
         btn_login.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                if(isValidCredentials()) {
+                isValidCredentials();
+                /*if(isValidCredentials()) {
                     Intent it = new Intent(MainActivity.this, UserActivity.class);
                     startActivity(it);
                 } else {
                     password_login.setText("");
                     Toast.makeText(MainActivity.this, "Invalid Credentials.", Toast.LENGTH_SHORT).show();
-                }
+                }*/
             }
         });
     }
 
-    private boolean isValidCredentials() {
-        String email = this.email_login.getText().toString();
-        String password = this.password_login.getText().toString();
+    private void isValidCredentials() {
+        final String email = this.email_login.getText().toString();
+        final String password = this.password_login.getText().toString();
 
-        Toast.makeText(MainActivity.this, email, Toast.LENGTH_SHORT).show();
-        Toast.makeText(MainActivity.this, password, Toast.LENGTH_SHORT).show();
-        return true;
+        //Toast.makeText(MainActivity.this, email, Toast.LENGTH_SHORT).show();
+        //Toast.makeText(MainActivity.this, password, Toast.LENGTH_SHORT).show();
+
+        RequestQueue MyRequestQueue = Volley.newRequestQueue(this);
+
+        String url = "https://drivncook.store/api/login.php?email=" + email + "&password=" + password;
+        StringRequest MyStringRequest = new StringRequest(Request.Method.POST, url, new Response.Listener<String>() {
+            @Override
+            public void onResponse(String response) {
+                response = response.trim();
+                Toast.makeText(MainActivity.this, response, Toast.LENGTH_SHORT).show();
+
+                if(response.equals("true")) {
+                    Toast.makeText(MainActivity.this, "OK", Toast.LENGTH_SHORT).show();
+                } else {
+                    Toast.makeText(MainActivity.this, "Invalid credentials.", Toast.LENGTH_SHORT).show();
+                }
+            }
+        }, new Response.ErrorListener() { //Create an error listener to handle errors appropriately.
+            @Override
+            public void onErrorResponse(VolleyError error) {
+                Toast.makeText(MainActivity.this, "Invalid credentials.", Toast.LENGTH_SHORT).show();
+
+            }
+        }) {
+            protected Map<String, String> getParams() {
+                Map<String, String> MyData = new HashMap<String, String>();
+                return MyData;
+            }
+        };
+
+        MyRequestQueue.add(MyStringRequest);
     }
 }
