@@ -1,3 +1,5 @@
 <resources>
     <string name="app_name">Driv\'N\'Cook</string>
+    <string name="point_s_fid_lit">point(s) fidélité</string>
+    <string name="vous_avez">Vous avez</string>
 </resources>

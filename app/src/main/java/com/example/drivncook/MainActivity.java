@@ -10,12 +10,18 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.Toast;
 
+import com.android.volley.AuthFailureError;
 import com.android.volley.Request;
 import com.android.volley.RequestQueue;
 import com.android.volley.Response;
 import com.android.volley.VolleyError;
+import com.android.volley.VolleyLog;
+import com.android.volley.toolbox.JsonObjectRequest;
 import com.android.volley.toolbox.StringRequest;
 import com.android.volley.toolbox.Volley;
+
+import org.json.JSONException;
+import org.json.JSONObject;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -39,13 +45,6 @@ public class MainActivity extends AppCompatActivity {
             @Override
             public void onClick(View v) {
                 isValidCredentials();
-                /*if(isValidCredentials()) {
-                    Intent it = new Intent(MainActivity.this, UserActivity.class);
-                    startActivity(it);
-                } else {
-                    password_login.setText("");
-                    Toast.makeText(MainActivity.this, "Invalid Credentials.", Toast.LENGTH_SHORT).show();
-                }*/
             }
         });
     }
@@ -54,35 +53,58 @@ public class MainActivity extends AppCompatActivity {
         final String email = this.email_login.getText().toString();
         final String password = this.password_login.getText().toString();
 
-        RequestQueue MyRequestQueue = Volley.newRequestQueue(this);
+        final String URL = "https://drivncook.store/api/login";
 
-        String url = "https://drivncook.store/api/login?email=" + email + "&password=" + password;
-        Log.d("hello", url);
-        StringRequest MyStringRequest = new StringRequest(Request.Method.POST, url, new Response.Listener<String>() {
+        RequestQueue queue = Volley.newRequestQueue(this);
+        StringRequest sr = new StringRequest(Request.Method.POST, URL, new Response.Listener<String>() {
             @Override
             public void onResponse(String response) {
-                response = response.trim();
-                if(response.equals("false")) {
-                    Toast.makeText(MainActivity.this, "Invalid credentials.", Toast.LENGTH_SHORT).show();
-                } else {
-                    Intent it = new Intent(MainActivity.this, UserActivity.class);
-                    it.putExtra("point", response + "");
-                    startActivity(it);
+                try {
+                    checkLoginReponse(response);
+                } catch (JSONException e) {
+                    e.printStackTrace();
                 }
             }
-        }, new Response.ErrorListener() { //Create an error listener to handle errors appropriately.
+        }, new Response.ErrorListener() {
             @Override
             public void onErrorResponse(VolleyError error) {
-                Toast.makeText(MainActivity.this, "Invalid credentials.", Toast.LENGTH_SHORT).show();
-
+                Log.d("loginError", error.toString());
             }
-        }) {
-            protected Map<String, String> getParams() {
-                Map<String, String> MyData = new HashMap<String, String>();
-                return MyData;
+        }){
+            @Override
+            protected Map<String,String> getParams(){
+                Map<String, String> params = new HashMap<String, String>();
+                params.put("email", email);
+                params.put("password", password);
+                return params;
+            }
+
+            @Override
+            public Map<String, String> getHeaders() {
+                Map<String,String> params = new HashMap<String, String>();
+                params.put("Content-Type","application/x-www-form-urlencoded"); // Il faut préciser ça pour pouvoir récupérer les valeurs en PHP simplement avec $_POST
+                return params;
             }
         };
 
-        MyRequestQueue.add(MyStringRequest);
+        queue.add(sr);
+    }
+
+    public void checkLoginReponse(String response) throws JSONException {
+        final JSONObject responseLogin = new JSONObject(response);
+
+        if(responseLogin.getString("error").equals("true")) {
+            this.password_login.setText("");
+            Toast.makeText(MainActivity.this, "Invalid credentials.", Toast.LENGTH_SHORT).show();
+        } else {
+            Intent it = new Intent(MainActivity.this, UserActivity.class);
+            it.putExtra("firstname", responseLogin.getString("firstname"));
+            it.putExtra("lastname", responseLogin.getString("lastname"));
+            it.putExtra("email", responseLogin.getString("email"));
+            it.putExtra("id", responseLogin.getString("id"));
+            it.putExtra("point", responseLogin.getString("point"));
+            startActivity(it);
+        }
+
     }
 }

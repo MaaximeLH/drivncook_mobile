@@ -6,24 +6,41 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
 import android.widget.TextView;
+import android.widget.Toast;
 
 public class UserActivity extends AppCompatActivity {
 
-    private TextView point_show;
+    private TextView welcome_user;
+    private TextView emailView;
+    private TextView point_view;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_user);
 
-        this.point_show = findViewById(R.id.point_show);
+        welcome_user = this.findViewById(R.id.welcome_user);
+        emailView = this.findViewById(R.id.email);
+        point_view = this.findViewById(R.id.point_view);
 
         Intent it = getIntent();
-        String point = "0";
+
+        String firstname = "";
+        String lastname = "";
+        String email = "";
+        String id = "";
+        String point = "";
+
         if(it != null) {
+            firstname = it.getStringExtra("firstname");
+            lastname = it.getStringExtra("lastname");
+            email = it.getStringExtra("email");
+            id = it.getStringExtra("id");
             point = it.getStringExtra("point");
         }
 
-        point_show.setText("Vous avez actuellement " + point + " point(s) de fidélité sur votre compte Driv'N'Cook !");
+        welcome_user.setText("Bienvenue " + lastname + " " + firstname);
+        emailView.setText(email);
+        point_view.setText(point);
     }
 }

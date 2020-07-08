@@ -31,13 +31,53 @@
     <TextView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:textSize="15sp"
+        android:textSize="20sp"
         android:layout_marginTop="20dp"
         android:textColor="@color/colorAccent"
         android:layout_gravity="center"
         android:textStyle="bold"
-        android:padding="5dp"
-        android:id="@+id/point_show">
-    </TextView>
+        android:text=""
+        android:id="@+id/welcome_user"
+        android:padding="5dp"/>
 
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:textSize="10sp"
+        android:textColor="@color/colorAccent"
+        android:layout_gravity="center"
+        android:textStyle="bold"
+        android:text=""
+        android:id="@+id/email"
+        android:padding="2dp"
+        tools:ignore="SmallSp" />
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:textSize="20sp"
+        android:layout_marginTop="20dp"
+        android:textColor="@color/colorAccent"
+        android:layout_gravity="center"
+        android:textStyle="bold"
+        android:text="@string/vous_avez"/>
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:textSize="30sp"
+        android:textColor="@color/colorAccent"
+        android:layout_gravity="center"
+        android:textStyle="bold"
+        android:id="@+id/point_view"
+        android:text="" />
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:textSize="20sp"
+        android:textColor="@color/colorAccent"
+        android:layout_gravity="center"
+        android:textStyle="bold"
+        android:text="@string/point_s_fid_lit"/>
 </LinearLayout>
